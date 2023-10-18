@@ -1,6 +1,11 @@
 <div class="chat-bot">
-  <div class="chat-history">
+
+  <div class="chat-history" #scrollMe [scrollTop]="scrollMe.scrollHeight">
+    <app-chat-message *ngFor="let message of messages" 
+      [message]="message" class="chat-message">
+    </app-chat-message>
   </div>
+
   <div class="chat-input">
     <input class="chat-input-field" matInput type="text" placeholder="Type something..." (keyup)="onKeyUp($event)"
       [(ngModel)]="userInput" (ngModelChange)="inputChanged($event)">
@@ -8,4 +13,5 @@
       <mat-icon>send</mat-icon>
     </button>
   </div>
+
 </div>

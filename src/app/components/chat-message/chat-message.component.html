@@ -1,0 +1,10 @@
+<div class="message"
+  [ngClass]="{'message-assistant': message.role === 'assistant', 'message-user': message.role === 'user'}">
+  <div class="message-meta">
+    <span class="bot-name" *ngIf="message.role === 'assistant'">Markie</span>
+    <span class="message-date">{{ message.datetime | date: 'MM-dd h:mm a' }}</span>
+  </div>
+  <div class="message-content">
+    {{ message.content }}
+  </div>
+</div>

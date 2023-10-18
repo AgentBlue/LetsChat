@@ -6,6 +6,7 @@ export let APP_CONFIG = new InjectionToken('app.config')
 export class IAppConfig {
   static config: any
   openAiApiKey!: string
+  openAiBaseUrl!: string
   baseUrl!: string  
   
 
@@ -39,5 +40,6 @@ export class IAppConfig {
 
 export const AppConfig: IAppConfig = {
   baseUrl: environment.baseHref,
+  openAiBaseUrl: IAppConfig.getEnvironmentVariable('openAiBaseUrl', false),
   openAiApiKey: IAppConfig.getEnvironmentVariable('openAiApiKey', false),
 }
