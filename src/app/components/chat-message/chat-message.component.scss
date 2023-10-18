@@ -1,36 +1,44 @@
-.message {
-  padding: 35px 38px;
-  background-repeat: no-repeat;
-  background-size: 29px auto;
+.chat-message {
+  display: flex;
   width: 100%;
 
-  &.message-assistant {
-    background-color: #f6f6f7;
-    text-align: left;
-    background-image: url("/assets/images/bot.svg");
-    padding-left: 100px;
-    background-position: 38px 35px;
+  .message {
+    margin: 2px 2px 2px 2px;
+    border-radius: 4px;
+    padding: 35px 38px;
+    background-repeat: no-repeat;
+    background-size: 29px auto;
+    width: 100%;
+
+    &.message-assistant {
+      background-color: #f6f6f7;
+      text-align: left;
+      background-image: url("/assets/images/bot.svg");
+      padding-left: 100px;
+      background-position: 38px 35px;
+    }
+
+    &.message-user {
+      background-color: white;
+      text-align: right;
+      background-image: url("/assets/images/user.svg");
+      padding-right: 100px;
+      background-position: right 38px top 35px;
+    }
   }
 
-  &.message-user {
-    background-color: white;
-    text-align: right;
-    background-image: url("/assets/images/user.svg");
-    padding-right: 100px;
-    background-position: right 38px top 35px;
+  .message-date {
+    color: #5e5e5e;
+    font-size: 12px;
+    line-height: 18px;
   }
-}
 
-.message-date {
-  color: #5e5e5e;
-  font-size: 12px;
-  line-height: 18px;
-}
+  .bot-name {
+    color: #333333;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 18px;
+    padding-right: 4px;
+  }
 
-.bot-name {
-  color: #333333;
-  font-size: 12px;
-  font-weight: bold;
-  line-height: 18px;
-  padding-right: 4px;
 }

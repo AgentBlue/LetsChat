@@ -1,14 +1,17 @@
 <div class="chat-bot">
 
-  <div class="chat-history" #scrollMe [scrollTop]="scrollMe.scrollHeight">
-    <app-chat-message *ngFor="let message of messages" 
-      [message]="message" class="chat-message">
+  <div class="chat-history">
+    <app-chat-message *ngFor="let message of messages" [message]="message">
     </app-chat-message>
+  </div>
+
+  <div class="actions-container">
+    <mat-slide-toggle [(ngModel)]="streamChat">Stream</mat-slide-toggle>
   </div>
 
   <div class="chat-input">
     <input class="chat-input-field" matInput type="text" placeholder="Type something..." (keyup)="onKeyUp($event)"
-      [(ngModel)]="userInput" (ngModelChange)="inputChanged($event)">
+      [(ngModel)]="userInput">
     <button class="chat-input-button" (click)="onSendMessage()">
       <mat-icon>send</mat-icon>
     </button>

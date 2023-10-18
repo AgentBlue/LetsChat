@@ -1,8 +1,8 @@
 import { ChatRole } from "../enums/chatrole";
 
-export interface Message {
+export interface IMessage {
   role: ChatRole;
   datetime: Date;
-  content: string;
-  eventSource: EventSource | undefined;
+  content: string | undefined;
+  response: Promise<Response>| undefined;
 }

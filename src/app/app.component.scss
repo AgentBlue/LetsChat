@@ -6,24 +6,31 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  justify-content: flex;
 
   .chat-history {
     flex-grow: 1;
     overflow-y: auto;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     flex-direction: column;
 
     border: 2px solid #0167ff;
     border-radius: 4px;
-    background-color: #f8f8f8;
+    background-color: #acacac;
     display: flex;
 
     padding: 10px;
-    
-    .chat-message {
-      display: flex;
-    }
+  }
+
+  .actions-container {
+    border: 2px solid #0167ff;
+    border-radius: 4px;
+    background-color: #f8f8f8;
+
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 5px;
   }
 
   .chat-input {
@@ -43,7 +50,7 @@
       font-size: 14px;
       background: none;
       border: none;
-      padding: 20px 10px;
+      padding: 10px;
       margin: 0;
       flex: 1;
       height: auto;

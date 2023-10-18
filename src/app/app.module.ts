@@ -4,6 +4,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { MatInputModule } from '@angular/material/input'
 import { MatIconModule } from '@angular/material/icon';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { FormsModule } from '@angular/forms';
 import { APP_CONFIG, AppConfig } from './app.config';
 import { ChatMessageComponent } from './components/chat-message/chat-message.component';
@@ -21,7 +22,8 @@ import { ScrollToBottomDirective } from './directives/scroll-to-bottom.directive
     HttpClientModule,
     MatInputModule,
     MatIconModule,
-    MatInputModule
+    MatInputModule,
+    MatSlideToggleModule,
   ],
   providers: [
     { provide: APP_CONFIG, useValue: AppConfig }
