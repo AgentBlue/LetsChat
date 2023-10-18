@@ -1,30 +1,38 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Inject, OnInit } from '@angular/core';
 import { APP_CONFIG, IAppConfig } from './app.config';
 import { HttpClient } from '@angular/common/http';
 import { IMessage } from './interfaces/message';
 import { ChatRole } from './enums/chatrole';
+import OpenAI from 'openai';
+import { ChatCompletionChunk, ChatCompletionCreateParamsNonStreaming, ChatCompletionCreateParamsStreaming } from 'openai/resources';
+import { Stream } from 'openai/streaming';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements AfterViewInit {
   title = 'lets-chat'
-
+  openAi!: OpenAI
   streamChat: boolean = false
   userInput: any;
   messages: IMessage[] = []
 
-  private abortController: AbortController
-
   constructor(public http: HttpClient,
     @Inject(APP_CONFIG) private config: IAppConfig) {
-    this.abortController = new AbortController()
   }
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
+    this.initOpenAi()
     this.initChat()
+  }
+
+  initOpenAi() {
+    this.openAi = new OpenAI({
+      apiKey: this.config.openAiApiKey,
+      dangerouslyAllowBrowser: true,
+    })
   }
 
   initChat() {
@@ -52,7 +60,7 @@ export class AppComponent implements OnInit {
         role: ChatRole.USER,
         datetime: new Date(),
         content: input,
-        response: undefined
+        responseStream: undefined
       }
       this.messages.push(userMsg)
       this.scrollToBottom()
@@ -69,7 +77,7 @@ export class AppComponent implements OnInit {
 
   sendMessage(input: string) {
 
-    const chatPayload = {
+    const chatPayload: ChatCompletionCreateParamsNonStreaming = {
       model: "gpt-3.5-turbo-16k",
       messages: [
         {
@@ -80,22 +88,12 @@ export class AppComponent implements OnInit {
       temperature: 0.7
     }
 
-    this.http.post<any>(
-      `${this.config.openAiBaseUrl}/chat/completions`,
-      chatPayload,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.config.openAiApiKey}`,
-        }
-      }
-    ).subscribe(resp => {
-
+    this.openAi.chat.completions.create(chatPayload).then(response => {
       const botMsg: IMessage = {
         role: ChatRole.ASSISTANT,
         datetime: new Date(),
-        content: resp.choices[0].message.content,
-        response: undefined
+        content: response.choices[0].message.content || '',
+        responseStream: undefined
       }
       this.messages.push(botMsg)
       this.scrollToBottom()
@@ -104,7 +102,7 @@ export class AppComponent implements OnInit {
 
   sendMessageStreamed(input: string) {
 
-    const chatPayload = {
+    const chatPayload: ChatCompletionCreateParamsStreaming = {
       model: "gpt-3.5-turbo-16k",
       messages: [
         {
@@ -112,25 +110,17 @@ export class AppComponent implements OnInit {
           content: input,
         }
       ],
-      temperature: 0.7
+      temperature: 0.7,
+      stream: true,
     }
 
-    this.http.post<any>(
-      `${this.config.openAiBaseUrl}/chat/completions`,
-      chatPayload,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.config.openAiApiKey}`,
-        }
-      }
-    ).subscribe(resp => {
+    this.openAi.chat.completions.create(chatPayload).then(async stream => {
 
       const botMsg: IMessage = {
         role: ChatRole.ASSISTANT,
         datetime: new Date(),
-        content: resp.choices[0].message.content,
-        response: undefined
+        content: undefined,
+        responseStream: stream
       }
       this.messages.push(botMsg)
       this.scrollToBottom()

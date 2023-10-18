@@ -10,56 +10,18 @@ import { IMessage } from 'src/app/interfaces/message';
 })
 export class ChatMessageComponent implements AfterViewInit {
   @Input() message!: IMessage;
-  messageContent!: string
+  messageContent: string = ''
 
-  ngAfterViewInit() {
+  async ngAfterViewInit() {
     if (this.message.content) {
       this.messageContent = this.message.content
     }
-    else if (this.message.response) {
-
-      this.message.response.then(response => {
-        const reader: ReadableStreamDefaultReader<string> | undefined
-          = response.body?.pipeThrough(new TextDecoderStream()).getReader()
-
-        if (!reader) {
-          throw new Error('Error occurred while creating stream reader')
+    else if (this.message.responseStream) {
+      for await (const part of this.message.responseStream) {
+        if(part.choices[0]?.delta?.content) {
+          this.messageContent = this.messageContent + part.choices[0]?.delta?.content
         }
-        if (this.message.content) {
-          this.messageContent = this.message.content
-        }
-        else {
-          if (reader) {
-            let processing = true
-            while (processing) {
-              reader.read().then(({ done, value }) => {
-                if (done) {
-                  processing = false
-                }
-
-                if (value) {
-                  const lines: string[] = value.split('\n');
-                  const parsedLines: ICompletion[] = this.getParsedStreamedCompletionResponse(lines);
-                  for (const line of parsedLines) {
-                    const { choices } = line;
-                    const { delta } = choices[0];
-                    if (delta?.content) {
-                      this.messageContent = this.messageContent.concat(delta.content)
-                    }
-                  }
-                }
-              })
-            }
-          }
-        }
-      })
+      }
     }
-  }
-
-  getParsedStreamedCompletionResponse(lines: string[]): ICompletion[] {
-    return lines
-      .map((line) => line.replace(/^data: /, '').trim())
-      .filter((line) => line !== '' && line !== '[DONE]')
-      .map((line) => JSON.parse(line));
   }
 }
