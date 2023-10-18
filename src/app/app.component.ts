@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
+import { APP_CONFIG, IAppConfig } from './app.config';
 
 @Component({
   selector: 'app-root',
@@ -6,15 +7,22 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-userInput: any;
-onSendMessage() {
-throw new Error('Method not implemented.');
-}
-inputChanged($event: any) {
-throw new Error('Method not implemented.');
-}
-onKeyUp($event: KeyboardEvent) {
-throw new Error('Method not implemented.');
-}
   title = 'lets-chat';
+  userInput: any;
+
+  constructor(
+    @Inject(APP_CONFIG) private config: IAppConfig) {
+  }
+
+  onSendMessage() {
+    throw new Error('Method not implemented.');
+  }
+
+  inputChanged($event: any) {
+    throw new Error('Method not implemented.');
+  }
+
+  onKeyUp($event: KeyboardEvent) {
+    throw new Error('Method not implemented.');
+  }
 }
