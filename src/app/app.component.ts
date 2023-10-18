@@ -1,9 +1,8 @@
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { APP_CONFIG, IAppConfig } from './app.config';
 import { HttpClient } from '@angular/common/http';
 import { IMessage } from './interfaces/message';
 import { ChatRole } from './enums/chatrole';
-import { ScrollToBottomDirective } from './directives/scroll-to-bottom.directive';
 
 @Component({
   selector: 'app-root',
@@ -103,12 +102,7 @@ export class AppComponent implements OnInit {
 
   sendMessageStreamed(input: string) {
 
-    const signal = this.abortController.signal
-    const headers = {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${this.config.openAiApiKey}`,
-    }
-    const requestBody = {
+    const chatPayload = {
       model: "gpt-3.5-turbo-16k",
       messages: [
         {
@@ -116,61 +110,28 @@ export class AppComponent implements OnInit {
           content: input,
         }
       ],
-      temperature: 0.7,
-      stream: true
+      temperature: 0.7
     }
-    const options = {
-      method: 'POST',
-      headers: headers,
-      body: JSON.stringify(requestBody),
-      signal
-    }
-    const url = `${this.config.openAiBaseUrl}/chat/completions`
 
-    try {
-      const response: Promise<Response> = fetch(url, options)
-      
+    this.http.post<any>(
+      `${this.config.openAiBaseUrl}/chat/completions`,
+      chatPayload,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${this.config.openAiApiKey}`,
+        }
+      }
+    ).subscribe(resp => {
+
       const botMsg: IMessage = {
         role: ChatRole.ASSISTANT,
         datetime: new Date(),
-        content: undefined,
-        response: response,
+        content: resp.choices[0].message.content,
+        response: undefined
       }
       this.messages.push(botMsg)
-
-    } catch (error) {
-      if (signal.aborted) {
-        console.error('Request aborted.');
-      } else {
-        this.handleError(error);
-      }
-    } finally {
-      this.stopCompletions();
-    }
-  }
-
-  handleError(error: any) {
-    console.error('Error:', error);
-    if (error instanceof DOMException && error.name === 'AbortError') {
-      throw new Error('Request was aborted');
-    } else if (error instanceof TypeError && error.message === 'Failed to fetch') {
-      throw new Error('Network error occurred');
-    } else if (error instanceof TypeError && error.message === 'Failed to decode') {
-      throw new Error('Error decoding response from server');
-    } else if (error instanceof TypeError && error.message ===
-      'JSON.parse: unexpected end of data at line 1 column 1 of the JSON data') {
-      throw new Error('Invalid JSON response from server');
-    } else if (error instanceof TypeError && error.message ===
-      'response.body?.pipeThrough(...).getReader is not a function') {
-      throw new Error('Invalid response from server');
-    } else {
-      throw new Error('Unknown error occurred');
-    }
-  }
-
-  stopCompletions() {
-    this.abortController.abort();
-    console.log('Stream stoped')
+    })
   }
 
   onKeyUp(event: KeyboardEvent): void {

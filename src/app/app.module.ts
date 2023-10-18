@@ -8,13 +8,11 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { FormsModule } from '@angular/forms';
 import { APP_CONFIG, AppConfig } from './app.config';
 import { ChatMessageComponent } from './components/chat-message/chat-message.component';
-import { ScrollToBottomDirective } from './directives/scroll-to-bottom.directive';
 
 @NgModule({
   declarations: [
     AppComponent,
     ChatMessageComponent,
-    ScrollToBottomDirective,
   ],
   imports: [
     BrowserModule,
