@@ -55,6 +55,7 @@ export class AppComponent implements OnInit {
         response: undefined
       }
       this.messages.push(userMsg)
+      this.scrollToBottom()
     }
 
     // get response
@@ -97,6 +98,7 @@ export class AppComponent implements OnInit {
         response: undefined
       }
       this.messages.push(botMsg)
+      this.scrollToBottom()
     })
   }
 
@@ -131,6 +133,7 @@ export class AppComponent implements OnInit {
         response: undefined
       }
       this.messages.push(botMsg)
+      this.scrollToBottom()
     })
   }
 
@@ -142,5 +145,14 @@ export class AppComponent implements OnInit {
 
   clearInput() {
     this.userInput = ''
+  }
+
+  scrollToBottom(): void {
+    const chatHistory = document.querySelector('.chat-history');
+    setTimeout(() => {
+      if (chatHistory) {
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+      }
+    }, 50);
   }
 }
